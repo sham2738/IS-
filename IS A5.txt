@@ -1,0 +1,253 @@
+
+
+PYTHON CODE:
+
+INPUT:
+"""
+Write a Java/C/C++/Python program to implement RSA algorithm.
+"""
+import random
+
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+def generate_keypair(p, q):
+    n = p * q
+    phi = (p - 1) * (q - 1)
+    e = random.randrange(1, phi)
+    # print("e=",e)
+    g = gcd(e, phi)
+    while g != 1:
+        e = random.randrange(1, phi)
+        g = gcd(e, phi)
+    d = multiplicative_inverse(e, phi)
+    return ((e, n), (d, n))
+
+def multiplicative_inverse(e, phi):
+    d = 0
+    x1 = 0
+    x2 = 1
+    y1 = 1
+    temp_phi = phi
+    while e > 0:
+        temp1 = temp_phi // e
+        temp2 = temp_phi - temp1 * e
+        temp_phi = e
+        e = temp2
+        x = x2 - temp1 * x1
+        y = d - temp1 * y1
+        x2 = x1
+        x1 = x
+        d = y1
+        y1 = y
+    if temp_phi == 1:
+        return d + phi
+
+def encrypt(public_key, plaintext):
+    key, n = public_key
+    cipher = [(ord(char) ** key) % n for char in plaintext]
+    return cipher
+
+def decrypt(private_key, ciphertext):
+    key, n = private_key
+    plain = [chr((char ** key) % n) for char in ciphertext]
+    return ''.join(plain)
+
+
+p = int(input("Enter first Prime No. .: "))
+q = int(input("Enter Second Prime No.: "))
+public_key, private_key = generate_keypair(p, q)
+
+plaintext = input("Enter PlainText: ")
+ciphertext = encrypt(public_key, plaintext)
+
+decrypted_text = decrypt(private_key, ciphertext)
+
+print("Plaintext:", plaintext)
+print("Ciphertext:", ciphertext)
+print("Decrypted text:", decrypted_text)
+
+OUTPUT:
+
+PS C:\Users\Dell\Desktop\ast 3> python -u "c:\Users\Dell\Documents\_ISL_A3.py"
+Enter first Prime No. .: 23
+Enter Second Prime No.: 17
+Enter PlainText: Sham Mane
+Plaintext: Sham Mane
+Ciphertext: [291, 202, 388, 159, 376, 246, 388, 26, 169]
+Decrypted text: Sham Mane
+
+
+C CODE:
+
+INPUT:
+
+#include<stdio.h> 
+#include<stdlib.h> 
+#include<math.h> 
+#include<string.h> 
+
+long int p,q,n,t,flag,e[100],d[100],temp[100],j,m[100],en[100],i; 
+char msg[100]; 
+int prime(long int); 
+void ce(); 
+long int cd(long int); 
+void encrypt(); 
+void decrypt(); 
+int main() 
+{ 
+    printf("\nENTER FIRST PRIME NUMBER\n"); 
+    scanf("%ld",&p); 
+    flag=prime(p); 
+    if(flag==0) 
+    { 
+        printf("\nWRONG INPUT\n"); 
+        exit(1); 
+    } 
+    printf("\nENTER ANOTHER PRIME NUMBER\n"); 
+    scanf("%ld",&q); 
+    flag=prime(q); 
+    if(flag==0||p==q) 
+    { 
+        printf("\nWRONG INPUT\n"); 
+        exit(1); 
+    } 
+    printf("\nENTER MESSAGE\n"); 
+    fflush(stdin); 
+    scanf("%s",msg); 
+    for(i=0;msg[i]!=NULL;i++) 
+        m[i]=msg[i]; 
+    n=p*q; 
+    t=(p-1)*(q-1); 
+    ce(); 
+    printf("\nPOSSIBLE VALUES OF e AND d ARE\n"); 
+    for(i=0;i<j-1;i++) 
+        printf("\n%ld\t%ld",e[i],d[i]); 
+    encrypt(); 
+    decrypt(); 
+    return 0; 
+}
+ 
+int prime(long int pr) 
+{ 
+    int i; 
+    j=sqrt(pr); 
+    for(i=2;i<=j;i++) 
+    { 
+        if(pr%i==0) 
+            return 0; 
+    } 
+    return 1; 
+}
+ 
+void ce() 
+{ 
+    int k; 
+    k=0; 
+    for(i=2;i<t;i++) 
+        {
+            if(t%i==0)
+                continue;
+                flag=prime(i);
+            if(flag==1&&i!=p&&i!=q)
+            {
+                e[k]=i; flag=cd(e[k]);
+                if(flag>0) 
+        { 
+            d[k]=flag; 
+            k++; 
+        } 
+        if(k==99) 
+            break; 
+        } 
+    } 
+}
+ 
+long int cd(long int x) 
+{ 
+    long int k=1; 
+    while(1) 
+    { 
+        k=k+t; 
+        if(k%x==0) 
+            return(k/x); 
+    } 
+} 
+
+void encrypt() 
+{ 
+    long int pt,ct,key=e[0],k,len; 
+    i=0; 
+    len=strlen(msg); 
+    while(i!=len) 
+    { 
+        pt=m[i]; 
+        pt=pt-96; 
+        k=1; 
+        for(j=0;j<key;j++) 
+        { 
+            k=k*pt; 
+            k=k%n; 
+        } 
+        temp[i]=k; 
+        ct=k+96; 
+        en[i]=ct; 
+        i++; 
+    } 
+    en[i]=-1; 
+    printf("\nTHE ENCRYPTED MESSAGE IS\n"); 
+    for(i=0;en[i]!=-1;i++) 
+        printf("%c",en[i]); 
+} 
+
+void decrypt() 
+{ 
+    long int pt,ct,key=d[0],k; 
+    i=0; 
+    while(en[i]!=-1) 
+    { 
+        ct=temp[i]; 
+        k=1; 
+        for(j=0;j<key;j++) 
+        { 
+            k=k*ct; 
+            k=k%n; 
+        } 
+        pt=k+96; 
+        m[i]=pt; 
+        i++; 
+    } 
+    m[i]=-1; 
+    printf("\nTHE DECRYPTED MESSAGE IS\n"); 
+    for(i=0;m[i]!=-1;i++) 
+        printf("%c",m[i]); 
+}
+
+
+
+OUTPUT:
+
+ENTER FIRST PRIME NUMBER
+5
+
+ENTER ANOTHER PRIME NUMBER
+7
+
+ENTER MESSAGE
+Computer Science
+
+POSSIBLE VALUES OF e AND d ARE
+
+11      11
+13      13
+17      17
+THE ENCRYPTED MESSAGE IS
+Co{kutjb
+THE DECRYPTED MESSAGE IS
+Computer
+
+
+
+
