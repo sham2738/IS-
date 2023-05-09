@@ -1,0 +1,76 @@
+
+
+PYTHON CODE
+INPUT:
+
+"""
+Write a Java/C/C++/Python program that contains a string (char pointer) with a value \Hello
+World. The program should AND or and XOR each character in this string with 127 and display
+the result
+"""
+
+string = input("Enter String: ")
+result_and = ""
+result_xor = ""
+
+for char in string:
+    # Bitwise AND with 127
+    and_val = ord(char) & 127
+    # Bitwise XOR with 127
+    xor_val = ord(char) ^ 127
+    
+    result_and += chr(and_val)
+    result_xor += chr(xor_val)
+
+print("Original string: ", string)
+print("AND result: ", result_and)
+print("XOR result: ", result_xor)
+
+
+OUTPUT: 
+PS C:\Users\Dell\Desktop\ast 3> python -u "c:\Users\Dell\Documents\_ISL_A1.py"
+Enter String: computer science
+Original string:  computer science
+AND result:  computer science
+XOR result:   ∟►↕
+
+
+
+
+C CODE
+INPUT:
+
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char str[] = "Hello World";
+    int len = strlen(str);
+    int i;
+    
+    printf("Enter String: %s\n",str);
+    printf("Original String: %s\n",str);
+    for (i = 0; i < len; i++) {
+        str[i] = str[i] & 127;
+    }
+
+    printf("String after bitwise AND operation with 127 : %s\n", str);
+ 
+    int j;
+
+    for (j = 0; j < len; j++) {
+        str[j] = str[j] ^ 127;
+    }
+
+    printf("String after bitwise XOR operation with 127 : %s\n", str);
+
+    return 0;
+
+}
+
+OUTPUT:
+
+Enter String: Hello World
+Original String: Hello World
+String after bitwise AND operation with 127 : Hello World
+tring after bitwise XOR operation with 127 : 7_(
